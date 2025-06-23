@@ -11,11 +11,10 @@ const App = () => {
   const [addresses, setAddresses] = useState<BlacklistedAddress[]>([]);
 
   const [filteredAddresses, setFilteredAddresses] = useState<BlacklistedAddress[]>([]);
-
-  const [searchQuery, setSearchQuery] = useState<string>('')
-
-  const [currentPage, setCurrentPage] = useState<number>(1)
-
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [flaggedBy, setFlaggedBy] = useState<string>('All'); // Default to no filter
+  const [flaggedByOptions, setFlaggedByOptions] = useState<string[]>(['All']); // Dynamic options
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
     data: { address: '', network: '', remark: '', tag: '' },
@@ -43,6 +42,9 @@ const App = () => {
         });
         setAddresses(sortedAddresses);
         setFilteredAddresses(sortedAddresses);
+        // Extract unique flagged_by values
+        const uniqueFlaggedBy = ['All', ...new Set(sortedAddresses.map((addr) => addr.flagged_by))];
+        setFlaggedByOptions(uniqueFlaggedBy);
       } catch (error) {
         setError(error instanceof Error ? error.message : 'Failed to fetch addresses');
       }
@@ -57,14 +59,14 @@ const App = () => {
   useEffect(() => {
     const lowerQuery = searchQuery.toLowerCase();
     const filtered = addresses.filter((addr) =>
-      addr.address.toLowerCase().includes(lowerQuery) ||
-      addr.chain.toLowerCase().includes(lowerQuery) ||
-      addr.id.toLowerCase().includes(lowerQuery)
+      (addr.address.toLowerCase().includes(lowerQuery) ||
+        addr.chain.toLowerCase().includes(lowerQuery) ||
+        addr.id.toLowerCase().includes(lowerQuery)) &&
+      (flaggedBy === 'All' || addr.flagged_by === flaggedBy)
     );
-
     setFilteredAddresses(filtered);
-    setCurrentPage(1); // Reset to first page on search
-  }, [searchQuery, addresses]);
+    setCurrentPage(1); // Reset to first page on filter change
+  }, [searchQuery, flaggedBy, addresses]);
 
   // Handle Add New button
   const handleAddNew = () => {
@@ -120,16 +122,20 @@ const App = () => {
       // const result = await manageBlacklistedAddress(data);
       // Update state
       const newAddress: BlacklistedAddress = {
-        address: data.data!.address,
+        address: data.data.address,
         blacklisted_at: new Date().toISOString(),
-        chain: data.data!.network,
+        chain: data.data.network,
         flagged_by: 'Garden',
-        remarks: data.data!.remark || null,
-        id: data.id || `${data.data!.address}-${data.data!.network}`,
+        remarks: data.data.remark || null,
+        id: data.id || `${data.data.address}-${data.data.network}`,
       };
       if (data.type === 'create') {
         setAddresses([newAddress, ...addresses]);
         setFilteredAddresses([newAddress, ...filteredAddresses]);
+        // Update flagged_by options if new value
+        if (!flaggedByOptions.includes('Garden')) {
+          setFlaggedByOptions([...flaggedByOptions, 'Garden']);
+        }
       } else if (data.type === 'update') {
         setAddresses(addresses.map((a) => (a.id === data.id ? newAddress : a)));
         setFilteredAddresses(filteredAddresses.map((a) => (a.id === data.id ? newAddress : a)));
@@ -151,7 +157,7 @@ const App = () => {
       {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
       {loading && <p style={{ textAlign: 'center' }}>Loading...</p>}
 
-          {/* Search Input */}
+      {/* Search Input */}
       <div style={{ marginBottom: '20px' }}>
         <input
           type="text"
@@ -180,6 +186,9 @@ const App = () => {
         onPageChange={setCurrentPage}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        flaggedBy={flaggedBy}
+        setFlaggedBy={setFlaggedBy}
+        flaggedByOptions={flaggedByOptions}
       />
 
       {/* AddressForm */}

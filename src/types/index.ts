@@ -17,7 +17,7 @@ export interface FormDataPayload{
 export interface FormData{
   data : FormDataPayload;
   id : string;
-  type : 'create' | 'update' | 'delete'
+  type : 'create' | 'update'
 }
 
 export interface DeletePayload {

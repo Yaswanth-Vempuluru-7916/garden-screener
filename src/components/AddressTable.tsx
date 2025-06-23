@@ -1,5 +1,4 @@
 import type { BlacklistedAddress } from '../types';
-import '../styles/AddressTable.css';
 
 interface AddressTableProps {
   addresses: BlacklistedAddress[];
@@ -8,70 +7,80 @@ interface AddressTableProps {
   onPageChange: (page: number) => void;
   onEdit: (address: BlacklistedAddress) => void;
   onDelete: (address: BlacklistedAddress) => void;
+  flaggedBy: string;
+  setFlaggedBy: (value: string) => void;
+  flaggedByOptions: string[];
 }
 
-function AddressTable({
+const AddressTable = ({
   addresses,
   currentPage,
   totalPages,
   onPageChange,
   onEdit,
   onDelete,
-}: AddressTableProps) {
+  flaggedBy,
+  setFlaggedBy,
+  flaggedByOptions,
+}: AddressTableProps) => {
   return (
-    <div className="address-table-container">
-      <div className="table-wrapper">
-        <table className="address-table">
-          <thead>
+    <div className="address-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Address</th>
+            <th>Chain</th>
+            <th>
+              Flagged By
+              <select
+                value={flaggedBy}
+                onChange={(e) => setFlaggedBy(e.target.value)}
+                className="flagged-by-filter"
+              >
+                {flaggedByOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </th>
+            <th>Blacklisted At</th>
+            <th>Remarks</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {addresses.length === 0 ? (
             <tr>
-              <th>Address</th>
-              <th>Network</th>
-              <th>Flagged By</th>
-              <th>Blacklisted At</th>
-              <th>Remarks</th>
-              <th>Actions</th>
+              <td colSpan={6}>No addresses found</td>
             </tr>
-          </thead>
-          <tbody>
-            {addresses.length === 0 ? (
-              <tr>
-                <td colSpan={6} style={{ textAlign: 'center' }}>
-                  No addresses found
+          ) : (
+            addresses.map((addr) => (
+              <tr key={addr.id}>
+                <td>{addr.address}</td>
+                <td>{addr.chain}</td>
+                <td>{addr.flagged_by}</td>
+                <td>{new Date(addr.blacklisted_at).toLocaleString()}</td>
+                <td>{addr.remarks || '-'}</td>
+                <td>
+                  {addr.flagged_by === 'Garden' ? (
+                    <>
+                      <button className="btn-secondary" onClick={() => onEdit(addr)}>
+                        Edit
+                      </button>
+                      <button className="btn-danger" onClick={() => onDelete(addr)}>
+                        Delete
+                      </button>
+                    </>
+                  ) : (
+                    '-'
+                  )}
                 </td>
               </tr>
-            ) : (
-              addresses.map((addr) => (
-                <tr key={addr.id}>
-                  <td>{addr.address}</td>
-                  <td>{addr.chain}</td>
-                  <td>{addr.flagged_by}</td>
-                  <td>
-                    {new Date(addr.blacklisted_at).toLocaleString()}
-                  </td>
-                  <td>{addr.remarks || '-'}</td>
-                  <td>
-                    <button
-                      className="btn-primary"
-                      onClick={() => onEdit(addr)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="btn-danger"
-                      onClick={() => onDelete(addr)}
-                      style={{ marginLeft: '8px' }}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Pagination Controls */}
+            ))
+          )}
+        </tbody>
+      </table>
       <div className="pagination">
         <button
           className="btn-secondary"
@@ -80,7 +89,7 @@ function AddressTable({
         >
           Previous
         </button>
-        <span className="pagination-info">
+        <span>
           Page {currentPage} of {totalPages}
         </span>
         <button
@@ -93,6 +102,6 @@ function AddressTable({
       </div>
     </div>
   );
-}
+};
 
 export default AddressTable;
