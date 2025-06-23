@@ -1,6 +1,6 @@
-import  { useEffect, useState } from 'react'
-import type { BlacklistedAddress, FormData } from './types'
-import { fetchAllBlackListedAddresses } from './utils/api';
+import { useEffect, useState } from 'react';
+import type { BlacklistedAddress, FormData, DeletePayload} from './types';
+import { fetchBlacklistedAddresses } from './utils/api';
 import AddressForm from './components/AddressForm';
 import AddressTable from './components/AddressTable';
 
@@ -30,22 +30,19 @@ const App = () => {
     const loadAddresses = async () => {
       setLoading(true)
       try {
-
-        const data = await fetchAllBlackListedAddresses()
+        const data = await fetchBlacklistedAddresses();
         // Generate id as address-chain (temporary, until API provides id)
-        //TODO : Remove this later 
+        // TODO: Remove this later
         const addressesWithId = data.map((addr) => ({
           ...addr,
           id: `${addr.address}-${addr.chain}`,
         }));
-
-        // Sort by flagged_by (asc) and blacklisted_at (desc)
+        // Sort by blacklisted_at (desc)
         const sortedAddresses = addressesWithId.sort((a, b) => {
           return new Date(b.blacklisted_at).getTime() - new Date(a.blacklisted_at).getTime();
         });
         setAddresses(sortedAddresses);
         setFilteredAddresses(sortedAddresses);
-
       } catch (error) {
         setError(error instanceof Error ? error.message : 'Failed to fetch addresses');
       }
@@ -88,28 +85,24 @@ const App = () => {
         tag: '',
       },
       id: addr.id,
-      type: 'edit',
+      type: 'update',
     });
     setIsFormOpen(true);
   };
-  // Handle Delete button (to be passed to AddressTable)
+
+  // Handle Delete button
   const handleDelete = async (addr: BlacklistedAddress) => {
     if (window.confirm(`Delete address ${addr.address}?`)) {
       try {
-        // Prepare FormData for delete
-        const deleteData: FormData = {
-          data: {
-            address: addr.address,
-            network: addr.chain,
-            remark: addr.remarks || '',
-            tag: '',
-          },
+        const deleteData: DeletePayload = {
           id: addr.id,
           type: 'delete',
         };
-        // Call API (placeholder, actual response handling depends on API)
+        // Log the delete payload
+        console.log('Delete FormData:', deleteData);
+        // Call API (commented out to avoid DB updates)
         // await manageBlacklistedAddress(deleteData);
-        // Update state (temporary, until POST API is integrated)
+        // Update state
         setAddresses(addresses.filter((a) => a.id !== addr.id));
         setFilteredAddresses(filteredAddresses.filter((a) => a.id !== addr.id));
       } catch (err) {
@@ -118,24 +111,26 @@ const App = () => {
     }
   };
 
-  // Handle form submission (to be passed to AddressForm)
+  // Handle form submission
   const handleFormSubmit = async (data: FormData) => {
     try {
-      // Call API (placeholder, actual response handling depends on API)
+      // Log the create/update payload
+      console.log(`${data.type.toUpperCase()} FormData:`, data);
+      // Call API (commented out to avoid DB updates)
       // const result = await manageBlacklistedAddress(data);
-      // Update state (temporary, until POST API is integrated)
+      // Update state
       const newAddress: BlacklistedAddress = {
-        address: data.data.address,
+        address: data.data!.address,
         blacklisted_at: new Date().toISOString(),
-        chain: data.data.network,
-        flagged_by: 'Garden', 
-        remarks: data.data.remark || null,
-        id: data.id || `${data.data.address}-${data.data.network}`,
+        chain: data.data!.network,
+        flagged_by: 'Garden',
+        remarks: data.data!.remark || null,
+        id: data.id || `${data.data!.address}-${data.data!.network}`,
       };
       if (data.type === 'create') {
         setAddresses([newAddress, ...addresses]);
         setFilteredAddresses([newAddress, ...filteredAddresses]);
-      } else if (data.type === 'edit') {
+      } else if (data.type === 'update') {
         setAddresses(addresses.map((a) => (a.id === data.id ? newAddress : a)));
         setFilteredAddresses(filteredAddresses.map((a) => (a.id === data.id ? newAddress : a)));
       }
@@ -177,8 +172,7 @@ const App = () => {
         Add New
       </button>
 
-       {/* AddressTable Placeholder */}
-      {/* Expected props for AddressTable.tsx */}
+      {/* AddressTable */}
       <AddressTable
         addresses={paginatedAddresses}
         currentPage={currentPage}
@@ -188,29 +182,7 @@ const App = () => {
         onDelete={handleDelete}
       />
 
-        <div style={{ marginBottom: '20px' }}>
-        <p>AddressTable Placeholder (Displays {paginatedAddresses.length} addresses)</p>
-        <button
-          className="btn-secondary"
-          onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </button>
-        <span style={{ margin: '0 10px' }}>
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          className="btn-secondary"
-          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </button>
-      </div>
-
-       {/* AddressForm Placeholder */}
-      {/* Expected props for AddressForm.tsx */}
+      {/* AddressForm */}
       {isFormOpen && (
         <AddressForm
           formData={formData}
@@ -218,16 +190,8 @@ const App = () => {
           onCancel={() => setIsFormOpen(false)}
         />
       )}
-      {isFormOpen && (
-        <div style={{ border: '1px solid #ccc', padding: '20px', borderRadius: '4px' }}>
-          <p>AddressForm Placeholder (Mode: {formData.type})</p>
-          <button className="btn-secondary" onClick={() => setIsFormOpen(false)}>
-            Cancel
-          </button>
-        </div>
-      )}
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

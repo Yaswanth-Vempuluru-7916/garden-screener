@@ -17,5 +17,10 @@ export interface FormDataPayload{
 export interface FormData{
   data : FormDataPayload;
   id : string;
-  type : 'create' | 'edit' | 'delete'
+  type : 'create' | 'update' | 'delete'
+}
+
+export interface DeletePayload {
+  id: string; // Unique ID (e.g., "0xEEd52587959209798461ABc426714E8101715A7D-eth")
+  type: 'delete'; // Action type for delete
 }
