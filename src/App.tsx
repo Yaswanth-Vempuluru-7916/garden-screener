@@ -152,29 +152,27 @@ const App = () => {
 
 
   return (
-    <div className="container">
-      <h1>BlackListed Addresses</h1>
-      {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
-      {loading && <p style={{ textAlign: 'center' }}>Loading...</p>}
+    <div className="max-w-7xl mx-auto p-6">
+      <h1 className="text-3xl font-bold text-gray-900 mb-8">BlackListed Addresses</h1>
+      {error && <p className="text-red-600 text-center mb-4">{error}</p>}
+      {loading && <p className="text-center mb-4">Loading...</p>}
 
       {/* Search Input */}
-      <div style={{ marginBottom: '20px' }}>
+      <div className="mb-5">
         <input
           type="text"
           placeholder="Search by address, chain, or id..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '8px',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
-          }}
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
 
-           {/* Add New Button */}
-      <button className="btn-primary" onClick={handleAddNew} style={{ marginBottom: '20px' }}>
+      {/* Add New Button */}
+      <button 
+        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium transition-colors mb-5" 
+        onClick={handleAddNew}
+      >
         Add New
       </button>
 

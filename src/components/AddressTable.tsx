@@ -24,76 +24,108 @@ const AddressTable = ({
   flaggedByOptions,
 }: AddressTableProps) => {
   return (
-    <div className="address-table">
-      <table>
-        <thead>
-          <tr>
-            <th>Address</th>
-            <th>Chain</th>
-            <th>
-              Flagged By
-              <select
-                value={flaggedBy}
-                onChange={(e) => setFlaggedBy(e.target.value)}
-                className="flagged-by-filter"
-              >
-                {flaggedByOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-            </th>
-            <th>Blacklisted At</th>
-            <th>Remarks</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {addresses.length === 0 ? (
+    <div className="bg-white shadow-sm rounded-lg overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
             <tr>
-              <td colSpan={6}>No addresses found</td>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Address
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Chain
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <div className="flex flex-col gap-2">
+                  <span>Flagged By</span>
+                  <select
+                    value={flaggedBy}
+                    onChange={(e) => setFlaggedBy(e.target.value)}
+                    className="text-sm border border-gray-300 rounded px-2 py-1 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    {flaggedByOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Blacklisted At
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Remarks
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
-          ) : (
-            addresses.map((addr) => (
-              <tr key={addr.id}>
-                <td>{addr.address}</td>
-                <td>{addr.chain}</td>
-                <td>{addr.flagged_by}</td>
-                <td>{new Date(addr.blacklisted_at).toLocaleString()}</td>
-                <td>{addr.remarks || '-'}</td>
-                <td>
-                  {addr.flagged_by === 'Garden' ? (
-                    <>
-                      <button className="btn-secondary" onClick={() => onEdit(addr)}>
-                        Edit
-                      </button>
-                      <button className="btn-danger" onClick={() => onDelete(addr)}>
-                        Delete
-                      </button>
-                    </>
-                  ) : (
-                    '-'
-                  )}
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {addresses.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                  No addresses found
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-      <div className="pagination">
+            ) : (
+              addresses.map((addr) => (
+                <tr key={addr.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {addr.address}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {addr.chain}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {addr.flagged_by}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(addr.blacklisted_at).toLocaleString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {addr.remarks || '-'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    {addr.flagged_by === 'Garden' ? (
+                      <div className="flex gap-2">
+                        <button 
+                          className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-1 rounded text-sm font-medium transition-colors"
+                          onClick={() => onEdit(addr)}
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors"
+                          onClick={() => onDelete(addr)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ) : (
+                      <span className="text-gray-400">-</span>
+                    )}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+      <div className="bg-white px-6 py-3 flex items-center justify-between border-t border-gray-200">
         <button
-          className="btn-secondary"
+          className="bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-4 py-2 rounded font-medium transition-colors"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
         >
           Previous
         </button>
-        <span>
+        <span className="text-sm text-gray-700">
           Page {currentPage} of {totalPages}
         </span>
         <button
-          className="btn-secondary"
+          className="bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-4 py-2 rounded font-medium transition-colors"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
         >
