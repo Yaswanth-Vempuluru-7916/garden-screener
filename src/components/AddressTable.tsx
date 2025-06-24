@@ -118,50 +118,19 @@ const AddressTable = ({
               >
                 <td className="px-4 py-3 whitespace-nowrap">
                   <div className="flex items-center space-x-2">
-                    <div className="flex-1 min-w-0">
-                      <span className="text-sm font-mono text-gray-900 dark:text-gray-100 break-all">
+                    <div
+                      className={`flex-1 min-w-0 cursor-pointer group`}
+                      onClick={() => copyToClipboard(addr.address, addr.id)}
+                      title={copiedId === addr.id ? "Copied!" : "Click to copy"}
+                    >
+                      <span
+                        className="text-sm font-mono break-all transition-colors cursor-pointer group-hover:text-blue-600 dark:group-hover:text-blue-400"
+                        onClick={() => copyToClipboard(addr.address, addr.id)}
+                        title={copiedId === addr.id ? "Copied!" : "Click to copy"}
+                      >
                         {addr.address}
                       </span>
                     </div>
-                    <button
-                      onClick={() => copyToClipboard(addr.address, addr.id)}
-                      className={`flex-shrink-0 p-1 rounded-md focus:outline-none transition-colors ${
-                        copiedId === addr.id
-                          ? "text-green-500 bg-gray-200 dark:bg-gray-700"
-                          : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700"
-                      }`}
-                      title={copiedId === addr.id ? "Copied!" : "Copy to clipboard"}
-                    >
-                      {copiedId === addr.id ? (
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      ) : (
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                          />
-                        </svg>
-                      )}
-                    </button>
                   </div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-sm">
@@ -195,7 +164,9 @@ const AddressTable = ({
                         {addr.remarks}
                       </span>
                     ) : (
-                      <span className="text-gray-500 dark:text-gray-400">-</span>
+                      <span className="text-gray-500 dark:text-gray-400">
+                        -
+                      </span>
                     )}
                   </div>
                 </td>
@@ -204,13 +175,15 @@ const AddressTable = ({
                     <div className="flex space-x-1">
                       <button
                         onClick={() => onEdit(addr)}
-                        className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md font-medium hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black"
+                        // className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md font-medium hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black"
+                        className="px-3 cursor-pointer py-1 rounded bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => onDelete(addr)}
-                        className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md font-medium hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black"
+                        // className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md font-medium hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black"
+                        className="px-3 py-1 cursor-pointer rounded bg-red-600 text-white text-xs font-semibold hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors"
                       >
                         Delete
                       </button>
