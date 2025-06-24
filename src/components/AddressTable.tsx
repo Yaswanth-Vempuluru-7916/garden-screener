@@ -41,21 +41,21 @@ const AddressTable = ({
   return (
     <div className="relative w-full overflow-x-auto">
       <table className="w-full text-sm text-left text-gray-900 dark:text-gray-100">
-        <thead className="text-xs uppercase bg-gray-100/50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
+        <thead className="text-sm  bg-gray-100/50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
           <tr>
-            <th className="px-4 py-3 font-lg text-gray-900 dark:text-gray-100 min-w-[200px]">
+            <th className="px-4 py-3 font-lg text-gray-900 dark:text-gray-100 min-w-[200px] tracking-widest">
               Address
             </th>
-            <th className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100 min-w-[100px]">
+            <th className="px-4 py-3 font-lg text-gray-900 dark:text-gray-100 min-w-[100px] tracking-widest">
               Chain
             </th>
-            <th className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100 min-w-[150px]">
+            <th className="px-4 py-3 font-lg text-gray-900 dark:text-gray-100 min-w-[150px] tracking-widest">
               <div className="flex items-center space-x-3">
                 <span>Flagged By</span>
                 <select
                   value={flaggedBy}
                   onChange={(e) => setFlaggedBy(e.target.value)}
-                  className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md px-2 py-1 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black"
+                  className="cursor-pointer bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md px-2 py-1 text-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black"
                 >
                   {flaggedByOptions.map((option) => (
                     <option
@@ -69,13 +69,13 @@ const AddressTable = ({
                 </select>
               </div>
             </th>
-            <th className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100 min-w-[120px]">
+            <th className="px-4 py-3 font-lg text-gray-900 dark:text-gray-100 min-w-[120px] tracking-widest">
               Blacklisted At
             </th>
-            <th className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100 min-w-[150px]">
+            <th className="px-4 py-3 font-lg text-gray-900 dark:text-gray-100 min-w-[150px] tracking-widest">
               Remarks
             </th>
-            <th className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100 min-w-[120px]">
+            <th className="px-4 py-3 font-lg text-gray-900 dark:text-gray-100 min-w-[120px] tracking-widest">
               Actions
             </th>
           </tr>
@@ -124,7 +124,7 @@ const AddressTable = ({
                       title={copiedId === addr.id ? "Copied!" : "Click to copy"}
                     >
                       <span
-                        className="text-sm font-mono break-all transition-colors cursor-pointer group-hover:text-blue-600 dark:group-hover:text-blue-400"
+                        className="text-sm  break-all transition-colors cursor-pointer group-hover:text-blue-600 dark:group-hover:text-blue-400 tracking-wider"
                         onClick={() => copyToClipboard(addr.address, addr.id)}
                         title={copiedId === addr.id ? "Copied!" : "Click to copy"}
                       >
@@ -202,7 +202,7 @@ const AddressTable = ({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="w-full sm:w-auto px-4 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md font-medium hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-200 dark:disabled:hover:bg-gray-700"
+          className="cursor-pointer w-full sm:w-auto px-4 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md font-medium hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-200 dark:disabled:hover:bg-gray-700"
         >
           <span className="flex items-center justify-center space-x-1">
             <svg
@@ -229,7 +229,7 @@ const AddressTable = ({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="w-full sm:w-auto px-4 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md font-medium hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed disabled:hover meadow:bg-gray-200 dark:disabled:hover:bg-gray-700"
+          className="cursor-pointer w-full sm:w-auto px-4 py-1 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-md font-medium hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed disabled:hover meadow:bg-gray-200 dark:disabled:hover:bg-gray-700"
         >
           <span className="flex items-center justify-center space-x-1">
             <span>Next</span>
