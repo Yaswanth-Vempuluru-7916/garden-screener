@@ -1,8 +1,8 @@
 import type { BlacklistedAddress } from '../types';
 
-// [mod] Use typed props with optional remark
+
 const AddressCard = ({ address, remarks, blacklisted_at, flagged_by }: BlacklistedAddress) => {
-    // [mod] Debug log to check remark value
+
     console.log('AddressCard props:', { address, remarks, blacklisted_at, flagged_by });
 
     const formatDate = (dateString: string) => {
@@ -63,15 +63,14 @@ const AddressCard = ({ address, remarks, blacklisted_at, flagged_by }: Blacklist
                     </div>
                 )}
 
-                {/* [mod] Add fallback for remark to diagnose issue */}
-                <div className="flex flex-row items-center space-x-3">
+                {remarks && (<div className="flex flex-row items-center space-x-3">
                     <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Remark
                     </span>
                     <span className="text-sm text-gray-300 leading-relaxed">
-                        {remarks || 'No remark provided'}
+                        {remarks}
                     </span>
-                </div>
+                </div>)}
             </div>
         </div>
     );

@@ -23,7 +23,7 @@ export async function computeHmacSignature(
   url: string,
   query: string,
   body: string,
-  appSecret: string // [mod] Pass appSecret as parameter
+  appSecret: string 
 ): Promise<string> {
   const encoder = new TextEncoder();
   const headerStr = [appId, timestamp, nonce, method.toUpperCase(), url, ''].join(';');
@@ -56,7 +56,7 @@ export async function computeHmacSignature(
   return hex;
 }
 
-export const fetchBlacklistedAddress = async (address: string = ''): Promise<BlacklistedAddress | BlacklistedAddress[]> => {
+export const fetchBlacklistedAddress = async (address: string = ''): Promise<BlacklistedAddress> => {
   try {
     const url = address
       ? `${BLACKLIST_API_URL}?address=${encodeURIComponent(address)}`
@@ -92,7 +92,8 @@ export const manageBlacklistedAddress = async (payload: FormData, appSecret: str
       body,
       appSecret
     );
-    console.log(`Sinature : ${signature}`);
+    console.log(`Payload : ${JSON.stringify(payload)}`);
+    console.log(`Signature : ${signature}`);
 
     const config = {
       headers: {

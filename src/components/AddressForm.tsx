@@ -3,14 +3,16 @@ import type { FormData } from "../types";
 
 interface AddressFormProps {
   formData: FormData;
-  onSubmit: (data: FormData, secret?: string) => void; // [mod] Add secret parameter
+  onSubmit: (data: FormData, secret?: string) => void;
   onCancel: () => void;
+  className?:string
 }
 
 function AddressForm({
   formData: initialFormData,
   onSubmit,
   onCancel,
+  className,
 }: AddressFormProps) {
   const [formData, setFormData] = useState<FormData>(initialFormData);
 
@@ -37,12 +39,12 @@ function AddressForm({
       alert("Address and Network are required");
       return;
     }
-    // [mod] Pass formData without secret, handled in App.tsx
+    console.log('Submitting FormData:', formData);
     onSubmit(formData);
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 sm:p-6">
+   <div className={`fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 sm:p-6 ${className || ''}`}>
       <div className="relative bg-black/70 border border-gray-800 rounded-2xl p-6 w-full max-w-2xl">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-4">

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { BlacklistedAddress, FormData } from './types';
 import { fetchBlacklistedAddress, manageBlacklistedAddress } from './utils/api';
 import AddressForm from './components/AddressForm';
-import AddressCardd from './components/AddressCard';
+import AddressCard from './components/AddressCard';
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -16,9 +16,10 @@ const App = () => {
   const [error, setError] = useState<string | null>(null);
   const [showSearch, setShowSearch] = useState<boolean>(true);
   const [showAddressCard, setShowAddressCard] = useState<boolean>(false);
-  const [searchResults, setSearchResults] = useState<BlacklistedAddress[] | null>(null);
+  const [searchResults, setSearchResults] = useState<BlacklistedAddress | null>(null);
   const [showSecretPrompt, setShowSecretPrompt] = useState<boolean>(false);
   const [tempSecret, setTempSecret] = useState<string>('');
+  const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -45,14 +46,14 @@ const App = () => {
     try {
       let appSecret = localStorage.getItem('appSecret') || secret;
       if (!appSecret) {
-        // [mod] Close form before showing secret prompt
-        setIsFormOpen(false);
+        // Keep form open, show secret prompt
         setShowSecretPrompt(true);
-        // [mod] Debug log to track state
-        console.log('App secret prompt triggered', { isFormOpen: false, showSecretPrompt: true });
+        setPendingFormData(data);
+        console.log('App secret prompt triggered', { isFormOpen, showSecretPrompt: true });
         return;
       }
-      console.log(`${data.type.toUpperCase()} FormData:`, data);
+      const formToSubmit = pendingFormData || data;
+      console.log(`${data.type.toUpperCase()} FormData:`, formToSubmit);
       const result = await manageBlacklistedAddress(data, appSecret);
       console.log('API Result:', result);
       setIsFormOpen(false);
@@ -60,6 +61,7 @@ const App = () => {
       if (secret) {
         localStorage.setItem('appSecret', secret);
       }
+      setPendingFormData(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save address');
     }
@@ -72,7 +74,7 @@ const App = () => {
       setShowSearch(false);
       try {
         const result = await fetchBlacklistedAddress(searchQuery.trim());
-        setSearchResults(Array.isArray(result) ? result : [result]);
+        setSearchResults(result);
         setShowAddressCard(true);
       } catch (error) {
         setError(error instanceof Error ? error.message : 'Failed to search address');
@@ -86,8 +88,8 @@ const App = () => {
   // Handle app secret prompt submission
   const handleSecretSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (tempSecret) {
-      handleFormSubmit(formData, tempSecret);
+    if (tempSecret && pendingFormData) {
+      handleFormSubmit(pendingFormData, tempSecret);
       setTempSecret('');
     }
   };
@@ -131,8 +133,20 @@ const App = () => {
 
       {/* Content */}
       <div className="relative z-10 p-6">
+        {/* {error && (
+          <div className="mb-4 mt-25 flex items-center justify-between px-4 py-3 rounded bg-red-100 border border-red-300 text-red-800 shadow">
+            <span>{error}</span>
+            <button
+              onClick={() => setError(null)}
+              className="ml-4 text-red-600 hover:underline text-sm"
+              aria-label="Dismiss error"
+            >
+              Dismiss
+            </button>
+          </div>
+        )} */}
         {loading && (
-          <div className="mt-4">
+          <div className=" absolute inset-2.5 mt-32">
             <div className="flex items-center justify-center p-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-900 dark:border-neutral-100"></div>
               <p className="ml-3 text-neutral-700 dark:text-neutral-300">Loading addresses...</p>
@@ -179,9 +193,10 @@ const App = () => {
             formData={formData}
             onSubmit={handleFormSubmit}
             onCancel={() => setIsFormOpen(false)}
+            className={showSecretPrompt ? 'opacity-50 pointer-events-none' : ''} // [mod] Reduce opacity when secret prompt is shown
           />
         )}
-        {showSecretPrompt && !isFormOpen && (
+        {showSecretPrompt && (
           <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-100 p-4 sm:p-6 pointer-events-auto">
             <div className="relative bg-black/70 border border-gray-800 rounded-2xl p-6 w-full max-w-md">
               <h2 className="text-xl font-bold text-white mb-4">Enter App Secret</h2>
@@ -213,16 +228,14 @@ const App = () => {
             </div>
           </div>
         )}
-        {showAddressCard && searchResults && searchResults.length > 0 && (
+        {showAddressCard && searchResults && (
           <div className="mt-6">
             <div className="min-h-screen flex items-center justify-center p-4">
-              {searchResults.map(addr => (
-                <AddressCardd key={addr.id} {...addr} />
-              ))}
+              <AddressCard key={searchResults.id} {...searchResults} />
             </div>
           </div>
         )}
-        {showAddressCard && searchResults && searchResults.length === 0 && (
+        {showAddressCard && !searchResults && (
           <div className="mt-6 text-center text-gray-500">No results found.</div>
         )}
       </div>
