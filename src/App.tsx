@@ -172,7 +172,7 @@ const App = () => {
   return (
     <div className="relative min-h-screen w-full bg-white dark:bg-black">
       {/* Grid Background with reduced opacity */}
-      <div className="absolute inset-0 [background-size:40px_40px] [background-image:linear-gradient(to_right,rgba(228,228,231,0.7)_1px,transparent_1px),linear-gradient(to_bottom,rgba(228,228,231,0.7)_1px,transparent_1px)] dark:[background-image:linear-gradient(to_right,rgba(38,38,38,0.7)_1px,transparent_1px),linear-gradient(to_bottom,rgba(38,38,38,0.7)_1px,transparent_1px)]" />
+      <div className="absolute inset-0 [background-size:40px_40px] [background-image:linear-gradient(to_right,rgba(228,228,231,0.4)_1px,transparent_1px),linear-gradient(to_bottom,rgba(228,228,231,0.4)_1px,transparent_1px)] dark:[background-image:linear-gradient(to_right,rgba(38,38,38,0.4)_1px,transparent_1px),linear-gradient(to_bottom,rgba(38,38,38,0.4)_1px,transparent_1px)]" />
 
       {/* Radial gradient overlay for faded look */}
       <div className="pointer-events-none absolute inset-0 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div>
@@ -250,7 +250,7 @@ const App = () => {
           </div>
           <button
             onClick={handleAddNew}
-            className="cursor-pointer group select-none text-sm tracking-normal rounded-sm flex gap-1.5 items-center justify-center text-nowrap border transition-colors duration-75 fv-style disabled:opacity-50 disabled:cursor-not-allowed bg-[hsl(219,_93%,_35%)] border-transparent text-white [box-shadow:hsl(219,_93%,_35%)_0_-2px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0] dark:[box-shadow:hsl(219,_93%,_35%)_0_-2px_0_0_inset,_hsl(0,_0%,_0%,_0.4)_0_1px_3px_0] hover:bg-[hsl(219,_93%,_30%)] active:[box-shadow:none] hover:[box-shadow:none] dark:hover:[box-shadow:none] h-8 px-5 py-5 data-kbd:pr-1 font-segoe"
+            className="cursor-pointer select-none text-sm tracking-normal rounded-sm flex gap-1.5 items-center justify-center text-nowrap border transition-colors duration-75 fv-style disabled:opacity-50 disabled:cursor-not-allowed bg-[hsl(219,_93%,_35%)] border-transparent text-white [box-shadow:hsl(219,_93%,_35%)_0_-2px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0] dark:[box-shadow:hsl(219,_93%,_35%)_0_-2px_0_0_inset,_hsl(0,_0%,_0%,_0.4)_0_1px_3px_0] hover:bg-[hsl(219,_93%,_30%)] active:[box-shadow:none] hover:[box-shadow:none] dark:hover:[box-shadow:none] h-8 px-5 py-5 data-kbd:pr-1 font-segoe"
           >
             <span>Add New Address</span>
             <span className="h-5 max-w-max rounded-xs px-1.5  items-center gap-0.5 text-[.6875rem] font-bold  dark:text-gray-300 dark:border-offgray-400/10 border  dark:bg-cream-900/10  hidden sm:flex !border-white/20 !bg-white/10 !text-white mr-3">Alt + N</span>

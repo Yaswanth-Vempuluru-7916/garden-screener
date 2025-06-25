@@ -43,13 +43,13 @@ const AddressTable = ({
       <table className="w-full text-sm text-left text-gray-900 dark:text-gray-100">
         <thead className="text-sm  bg-gray-100/50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
           <tr>
-            <th className="px-4 py-3 font-lg text-gray-900 dark:text-gray-100 min-w-[200px] tracking-widest">
+            <th className="px-4 py-2 text-left text-sm font-semibold text-muted-foreground tracking-wider uppercase border-b border-muted/20 bg-muted/5">
               Address
             </th>
-            <th className="px-4 py-3 font-lg text-gray-900 dark:text-gray-100 min-w-[100px] tracking-widest">
+            <th className="px-4 py-2 text-left text-sm font-semibold text-muted-foreground tracking-wider uppercase border-b border-muted/20 bg-muted/5">
               Chain
             </th>
-            <th className="px-4 py-3 font-lg text-gray-900 dark:text-gray-100 min-w-[150px] tracking-widest">
+            <th className="px-4 py-2 text-left text-sm font-semibold text-muted-foreground tracking-wider uppercase border-b border-muted/20 bg-muted/5">
               <div className="flex items-center space-x-3">
                 <span>Flagged By</span>
                 <select
@@ -69,13 +69,13 @@ const AddressTable = ({
                 </select>
               </div>
             </th>
-            <th className="px-4 py-3 font-lg text-gray-900 dark:text-gray-100 min-w-[120px] tracking-widest">
+            <th className="px-4 py-2 text-left text-sm font-semibold text-muted-foreground tracking-wider uppercase border-b border-muted/20 bg-muted/5">
               Blacklisted At
             </th>
-            <th className="px-4 py-3 font-lg text-gray-900 dark:text-gray-100 min-w-[150px] tracking-widest">
+            <th className="px-4 py-2 text-left text-sm font-semibold text-muted-foreground tracking-wider uppercase border-b border-muted/20 bg-muted/5">
               Remarks
             </th>
-            <th className="px-4 py-3 font-lg text-gray-900 dark:text-gray-100 min-w-[120px] tracking-widest">
+            <th className="px-4 py-2 text-left text-sm font-semibold text-muted-foreground tracking-wider uppercase border-b border-muted/20 bg-muted/5">
               Actions
             </th>
           </tr>

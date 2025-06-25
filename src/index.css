@@ -1,15 +1,167 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;500;600;700&display=swap');
+/* === FONT PAIR 1: Montserrat + Open Sans === */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;500;600&display=swap');
+
+/* === FONT PAIR 2: Playfair Display + Source Sans Pro === */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Sans+Pro:wght@400;500;600&display=swap');
+
+/* === FONT PAIR 3: Oswald + Lato === */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Lato:wght@400;500;600&display=swap');
+
+/* === FONT PAIR 4: Roboto Slab + Roboto === */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;600;700&family=Roboto:wght@400;500;600&display=swap');
+
+/* === FONT PAIR 5: Poppins + Nunito Sans === */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Nunito+Sans:wght@400;500;600&display=swap');
+
+/* === FONT PAIR 6: Merriweather + Merriweather Sans === */
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@500;700&family=Merriweather+Sans:wght@400;500;600&display=swap');
+
+/* === FONT PAIR 7: Crimson Text + Work Sans === */
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@500;600;700&family=Work+Sans:wght@400;500;600&display=swap');
+
+/* === FONT PAIR 8: Ubuntu (Single Family) === */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap');
+
+/* === FONT PAIR 9: Raleway + PT Sans === */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@500;600;700&family=PT+Sans:wght@400;700&display=swap');
+
+/* === FONT PAIR 10: Libre Baskerville + Source Sans Pro === */
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@500;700&family=Source+Sans+Pro:wght@400;500;600&display=swap');
+
+/* === CURRENT ACTIVE FONTS: Inter + Cormorant Garamond === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap');
+
 @import "tailwindcss";
+
 body {
-  font-family: 'Lora', serif;
+   font-family: 'Inter', sans-serif;
+   /* font-family: 'Roboto', sans-serif; */
 }
- html, body {
-    background-color: #000000 !important;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-  }
-  
-  * {
-    box-sizing: border-box;
-  }
+
+/* h1, h2, th {
+   font-family: 'Raleway', sans-serif;
+   
+} */
+
+html, body {
+  background-color: #000000 !important;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* === FONT PAIR 1: Montserrat + Open Sans === */
+
+/* body {
+   font-family: 'Open Sans', sans-serif;
+}
+
+h1, h2, th {
+   font-family: 'Montserrat', sans-serif;
+} */
+
+
+/* === FONT PAIR 2: Playfair Display + Source Sans Pro === */
+
+/* body {
+   font-family: 'Source Sans Pro', sans-serif;
+}
+
+h1, h2, th {
+   font-family: 'Playfair Display', serif;
+} */
+
+
+/* === FONT PAIR 3: Oswald + Lato === */
+/* 
+body {
+   font-family: 'Lato', sans-serif;
+}
+
+h1, h2, th {
+   font-family: 'Oswald', sans-serif;
+} */
+
+
+/* === FONT PAIR 4: Roboto Slab + Roboto === */
+/* 
+body {
+   font-family: 'Roboto', sans-serif;
+}
+
+h1, h2, th {
+   font-family: 'Roboto Slab', serif;
+} */
+
+
+/* === FONT PAIR 5: Poppins + Nunito Sans === */
+/* 
+body {
+   font-family: 'Nunito Sans', sans-serif;
+}
+
+h1, h2, th {
+   font-family: 'Poppins', sans-serif;
+} */
+
+
+/* === FONT PAIR 6: Merriweather + Merriweather Sans === */
+/* 
+body {
+   font-family: 'Merriweather Sans', sans-serif;
+}
+
+h1, h2, th {
+   font-family: 'Merriweather', serif;
+} */
+
+
+/* === FONT PAIR 7: Crimson Text + Work Sans === */
+/* 
+body {
+   font-family: 'Work Sans', sans-serif;
+}
+
+h1, h2, th {
+   font-family: 'Crimson Text', serif;
+}
+ */
+
+/* === FONT PAIR 8: Ubuntu (Single Family) === */
+/*
+body {
+   font-family: 'Ubuntu', sans-serif;
+   font-weight: 400;
+}
+
+h1, h2, th {
+   font-family: 'Ubuntu', sans-serif;
+   font-weight: 700;
+}
+*/
+
+/* === FONT PAIR 9: Raleway + PT Sans === */
+
+/* body {
+   font-family: 'PT Sans', sans-serif;
+}
+
+h1, h2, th {
+   font-family: 'Raleway', sans-serif;
+} */
+
+
+/* === FONT PAIR 10: Libre Baskerville + Source Sans Pro === */
+/*
+body {
+   font-family: 'Source Sans Pro', sans-serif;
+}
+
+h1, h2, th {
+   font-family: 'Libre Baskerville', serif;
+}
+*/
