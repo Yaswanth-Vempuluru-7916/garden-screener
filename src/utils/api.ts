@@ -1,16 +1,12 @@
 import axios, { AxiosError } from "axios";
-import type { BlacklistedAddress, DeletePayload, FormData } from "../types";
+import type { BlacklistedAddress, FormData } from "../types";
 
 const BLACKLIST_API_URL = import.meta.env.VITE_BLACKLIST_API_URL;
-
-// TODO: Replace with actual endpoint
 const BLACKLIST_POST_URL = import.meta.env.VITE_BLACKLIST_POST_URL;
-
-
 const APP_ID = import.meta.env.VITE_APP_ID;
-const APP_SECRET = import.meta.env.VITE_APP_SECRET; 
 
-// Generate timestamp for POST request headers
+
+
 const generateTimestamp = (): string => {
     return Date.now().toString();
 }
@@ -18,7 +14,6 @@ const generateTimestamp = (): string => {
 const generateNonce = (): string => {
     return Date.now().toString();    
 };
-
 
 export async function computeHmacSignature(
   appId: string,
@@ -28,29 +23,22 @@ export async function computeHmacSignature(
   url: string,
   query: string,
   body: string,
-  appSecret: string
+  appSecret: string // [mod] Pass appSecret as parameter
 ): Promise<string> {
-    
   const encoder = new TextEncoder();
-
   const headerStr = [appId, timestamp, nonce, method.toUpperCase(), url, ''].join(';');
   let message = headerStr;
 
-  // Append query if present
   if (query) {
     message += `;${query}`;
   }
 
-  // Convert message and body to Uint8Array
   const messageBytes = encoder.encode(message);
   const bodyBytes = encoder.encode(body);
-
-  // Combine both byte arrays
   const combined = new Uint8Array(messageBytes.length + bodyBytes.length);
   combined.set(messageBytes);
   combined.set(bodyBytes, messageBytes.length);
 
-  // Import secret key
   const key = await crypto.subtle.importKey(
     'raw',
     encoder.encode(appSecret),
@@ -59,10 +47,7 @@ export async function computeHmacSignature(
     ['sign']
   );
 
-  // Generate HMAC signature
   const signature = await crypto.subtle.sign('HMAC', key, combined);
-
-  // Convert to lowercase hex
   const hex = Array.from(new Uint8Array(signature))
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('')
@@ -71,10 +56,12 @@ export async function computeHmacSignature(
   return hex;
 }
 
-// GET: Fetch all blacklisted addresses
-export const fetchBlacklistedAddresses = async (): Promise<BlacklistedAddress[]> => {
+export const fetchBlacklistedAddress = async (address: string = ''): Promise<BlacklistedAddress | BlacklistedAddress[]> => {
   try {
-    const response = await axios.get<BlacklistedAddress[]>(BLACKLIST_API_URL);
+    const url = address
+      ? `${BLACKLIST_API_URL}?address=${encodeURIComponent(address)}`
+      : BLACKLIST_API_URL;
+    const response = await axios.get(url);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -84,14 +71,15 @@ export const fetchBlacklistedAddresses = async (): Promise<BlacklistedAddress[]>
   }
 };
 
-// POST: Create, update, or delete a blacklisted address
-export const manageBlacklistedAddress = async (payload: FormData | DeletePayload): Promise<BlacklistedAddress | { message: string }> => {
+export const manageBlacklistedAddress = async (payload: FormData, appSecret: string): Promise<BlacklistedAddress | { message: string }> => { // [mod] Add appSecret parameter
   try {
-    const timestamp = generateTimestamp();
-    const nonce = generateNonce();
+    // const timestamp = generateTimestamp();
+    const timestamp = "1749532227236";
+    // const nonce = generateNonce();
+    const nonce = "nonce_json";
     const method = 'POST';
-    const url = BLACKLIST_POST_URL;
-    const query = ''; // No query params for POST
+    const url = '/api/data/sync';
+    const query = '';
     const body = JSON.stringify(payload);
 
     const signature = await computeHmacSignature(
@@ -102,8 +90,9 @@ export const manageBlacklistedAddress = async (payload: FormData | DeletePayload
       url,
       query,
       body,
-      APP_SECRET
+      appSecret
     );
+    console.log(`Sinature : ${signature}`);
 
     const config = {
       headers: {
@@ -115,7 +104,7 @@ export const manageBlacklistedAddress = async (payload: FormData | DeletePayload
       },
       maxBodyLength: Infinity,
     };
-    const response = await axios.post<BlacklistedAddress | { message: string }>(BLACKLIST_POST_URL, payload, config);
+    const response = await axios.post<BlacklistedAddress>(BLACKLIST_POST_URL, payload, config);
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {

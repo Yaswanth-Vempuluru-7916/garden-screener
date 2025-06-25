@@ -3,7 +3,7 @@ import type { FormData } from "../types";
 
 interface AddressFormProps {
   formData: FormData;
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: FormData, secret?: string) => void; // [mod] Add secret parameter
   onCancel: () => void;
 }
 
@@ -14,13 +14,21 @@ function AddressForm({
 }: AddressFormProps) {
   const [formData, setFormData] = useState<FormData>(initialFormData);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      data: { ...prev.data, [name]: value },
-      id: `${prev.data.address}-${prev.data.network}`,
-    }));
+    setFormData((prev) => {
+      const newData = {
+        ...prev.data,
+        [name]: value,
+      };
+      return {
+        ...prev,
+        data: newData,
+        id: `${newData.address}-${newData.network}`,
+      };
+    });
   };
 
   const handleSubmit = (e: FormEvent) => {
@@ -29,6 +37,7 @@ function AddressForm({
       alert("Address and Network are required");
       return;
     }
+    // [mod] Pass formData without secret, handled in App.tsx
     onSubmit(formData);
   };
 
@@ -86,31 +95,39 @@ function AddressForm({
               >
                 Network *
               </label>
-              <input
-                type="text"
-                id="network"
+              <select
+                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black"
                 name="network"
                 value={formData.data.network}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black"
-                placeholder="Enter network name..."
-              />
+              >
+                <option value="">Select a network...</option>
+                <option value="eth">Ethereum</option>
+                <option value="btc">Bitcoin</option>
+                <option value="base">Base</option>
+                <option value="arb">Arbitrum</option>
+                <option value="stark">Starknet</option>
+                <option value="bera">BeraChain</option>
+                <option value="corn">Corn</option>
+                <option value="uni">Unichain</option>
+                <option value="hyp">HyperEVM</option>
+              </select>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label
-                  htmlFor="remark"
+                  htmlFor="remarks"
                   className="block text-lg font-medium text-white"
                 >
                   Remark
                 </label>
                 <input
                   type="text"
-                  id="remark"
-                  name="remark"
-                  value={formData.data.remark}
+                  id="remarks"
+                  name="remarks"
+                  value={formData.data.remarks}
                   onChange={handleInputChange}
                   className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black"
                   placeholder="Optional remark..."
@@ -147,15 +164,9 @@ function AddressForm({
             </button>
             <button
               type="submit"
-              className={`cursor-pointer w-full sm:w-auto px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black transition-colors
-      ${
-        formData.type === "create"
-          ? "bg-[hsl(219,_93%,_35%)] border-transparent text-white [box-shadow:hsl(219,_93%,_35%)_0_-2px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0] dark:[box-shadow:hsl(219,_93%,_35%)_0_-2px_0_0_inset,_hsl(0,_0%,_0%,_0.4)_0_1px_3px_0] hover:bg-[hsl(219,_93%,_30%)] active:[box-shadow:none] hover:[box-shadow:none] dark:hover:[box-shadow:none] focus:ring-blue-500"
-          : "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500"
-      }
-    `}
+              className="cursor-pointer w-full sm:w-auto px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black transition-colors bg-[hsl(219,_93%,_35%)] border-transparent text-white [box-shadow:hsl(219,_93%,_35%)_0_-2px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0] dark:[box-shadow:hsl(219,_93%,_35%)_0_-2px_0_0_inset,_hsl(0,_0%,_0%,_0.4)_0_1px_3px_0] hover:bg-[hsl(219,_93%,_30%)] active:[box-shadow:none] hover:[box-shadow:none] dark:hover:[box-shadow:none] focus:ring-blue-500"
             >
-              {formData.type === "create" ? "Create Address" : "Update Address"}
+              Create Address
             </button>
           </div>
         </form>
