@@ -14,6 +14,7 @@ const App = () => {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [showSearch, setShowSearch] = useState<boolean>(true);
   const [showAddressCard, setShowAddressCard] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<BlacklistedAddress | null>(null);
@@ -58,12 +59,20 @@ const App = () => {
       console.log('API Result:', result);
       setIsFormOpen(false);
       setShowSecretPrompt(false);
+      setError(null); // Clear error when success is set
+      setSuccessMessage("Address blacklisted successfully");
+      setTimeout(() => setSuccessMessage(null), 3000); // Auto-dismiss after 3 seconds
+      const response = await fetchBlacklistedAddress(formToSubmit.data.address);
+      setShowAddressCard(true);
+      setSearchResults(response);
       if (secret) {
         localStorage.setItem('appSecret', secret);
       }
       setPendingFormData(null)
     } catch (err) {
+      setSuccessMessage(null); // Clear success when error is set
       setError(err instanceof Error ? err.message : 'Failed to save address');
+      setTimeout(() => setError(null), 3000); // Auto-dismiss after 3 seconds
     }
   };
 
@@ -76,8 +85,11 @@ const App = () => {
         const result = await fetchBlacklistedAddress(searchQuery.trim());
         setSearchResults(result);
         setShowAddressCard(true);
+        setError(null); // Clear error on successful search
       } catch (error) {
+        setSuccessMessage(null); // Clear success when error is set
         setError(error instanceof Error ? error.message : 'Failed to search address');
+        setTimeout(() => setError(null), 3000); // Auto-dismiss after 3 seconds
         setSearchResults(null);
       } finally {
         setLoading(false);
@@ -92,7 +104,7 @@ const App = () => {
       handleFormSubmit(pendingFormData, tempSecret);
       setTempSecret('');
     }
-     setShowSecretPrompt(false);
+    setShowSecretPrompt(false);
   };
 
   useEffect(() => {
@@ -134,18 +146,6 @@ const App = () => {
 
       {/* Content */}
       <div className="relative z-10 p-6">
-        {/* {error && (
-          <div className="mb-4 mt-25 flex items-center justify-between px-4 py-3 rounded bg-red-100 border border-red-300 text-red-800 shadow">
-            <span>{error}</span>
-            <button
-              onClick={() => setError(null)}
-              className="ml-4 text-red-600 hover:underline text-sm"
-              aria-label="Dismiss error"
-            >
-              Dismiss
-            </button>
-          </div>
-        )} */}
         {loading && (
           <div className=" absolute inset-2.5 mt-32">
             <div className="flex items-center justify-center p-8">
@@ -227,6 +227,16 @@ const App = () => {
                 </div>
               </form>
             </div>
+          </div>
+        )}
+        {error && (
+          <div className="fixed top-20 right-4 z-110 bg-red-500 text-white p-4 rounded-md shadow-lg">
+            <p>{error}</p>
+          </div>
+        )}
+        {successMessage && (
+          <div className="fixed top-20 right-4 z-110 bg-green-500 text-white p-4 rounded-md shadow-lg">
+            <p>{successMessage}</p>
           </div>
         )}
         {showAddressCard && searchResults && (

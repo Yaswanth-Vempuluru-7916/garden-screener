@@ -98,7 +98,7 @@ function AddressForm({
                 Network *
               </label>
               <select
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black"
+                className="cursor-pointer w-auto px-4 py-2 bg-gray-900 border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black overflow-hidden"
                 name="network"
                 value={formData.data.network}
                 onChange={handleInputChange}
