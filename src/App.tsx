@@ -8,7 +8,7 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
-    data: { address: '', remarks: '', tag: '', network: '' },
+    data: { address: '',network: '', remarks: '', tag: '' },
     id: '',
     type: 'create',
   });
@@ -34,7 +34,7 @@ const App = () => {
   const handleAddNew = useCallback(() => {
     console.log('Add New Address button clicked');
     setFormData({
-      data: { address: '', remarks: '', tag: '', network: '' },
+      data: {  address: '',network: '', remarks: '', tag: '' },
       id: '',
       type: 'create',
     });
@@ -53,7 +53,7 @@ const App = () => {
         return;
       }
       const formToSubmit = pendingFormData || data;
-      console.log(`${data.type.toUpperCase()} FormData:`, formToSubmit);
+      console.log(` FormData just before api call:`, formToSubmit);
       const result = await manageBlacklistedAddress(data, appSecret);
       console.log('API Result:', result);
       setIsFormOpen(false);
@@ -92,6 +92,7 @@ const App = () => {
       handleFormSubmit(pendingFormData, tempSecret);
       setTempSecret('');
     }
+     setShowSecretPrompt(false);
   };
 
   useEffect(() => {

@@ -73,10 +73,9 @@ export const fetchBlacklistedAddress = async (address: string = ''): Promise<Bla
 
 export const manageBlacklistedAddress = async (payload: FormData, appSecret: string): Promise<BlacklistedAddress | { message: string }> => { // [mod] Add appSecret parameter
   try {
-    // const timestamp = generateTimestamp();
-    const timestamp = "1749532227236";
-    // const nonce = generateNonce();
-    const nonce = "nonce_json";
+    const timestamp = generateTimestamp();
+
+    const nonce = generateNonce();
     const method = 'POST';
     const url = '/api/data/sync';
     const query = '';
@@ -94,7 +93,7 @@ export const manageBlacklistedAddress = async (payload: FormData, appSecret: str
     );
     console.log(`Payload : ${JSON.stringify(payload)}`);
     console.log(`Signature : ${signature}`);
-
+    console.log(`Secret : ${appSecret}`);
     const config = {
       headers: {
         'X-Signature-appid': APP_ID,
