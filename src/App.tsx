@@ -4,6 +4,7 @@ import { fetchBlacklistedAddress, manageBlacklistedAddress } from "./utils/api";
 import AddressForm from "./components/AddressForm";
 import AddressCard from "./components/AddressCard";
 import { toast, Toaster } from "sonner";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -14,16 +15,32 @@ const App = () => {
     type: "create",
   });
   const [loading, setLoading] = useState<boolean>(false);
-  const [showSearch, setShowSearch] = useState<boolean>(true);
+  const [showSearch, setShowSearch] = useState<boolean>(false);
   const [showAddressCard, setShowAddressCard] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<BlacklistedAddress | null>(null);
   const [showSecretPrompt, setShowSecretPrompt] = useState<boolean>(false);
   const [tempSecret, setTempSecret] = useState<string>("");
   const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Focus search bar on page load
+  // Load search history from localStorage on mount
+  useEffect(() => {
+    const history = localStorage.getItem("searchHistory");
+    if (history) {
+      setSearchHistory(JSON.parse(history));
+    }
+  }, []);
+
+  // Save search history to localStorage whenever it changes
+  useEffect(() => {
+    if (searchHistory.length > 0) {
+      localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
+    }
+  }, [searchHistory]);
+
+  // Focus search bar when showSearch becomes true
   useEffect(() => {
     if (showSearch) {
       searchInputRef.current?.focus();
@@ -32,11 +49,11 @@ const App = () => {
 
   // Handle Add New button
   const handleAddNew = useCallback(() => {
-    console.log('Add New Address button clicked');
+    console.log("Add New Address button clicked");
     setFormData({
-      data: {  address: '',network: '', remark: '', tag: '' },
-      id: '',
-      type: 'create',
+      data: { address: "", network: "", remark: "", tag: "" },
+      id: "",
+      type: "create",
     });
     setIsFormOpen(true);
   }, []);
@@ -44,18 +61,17 @@ const App = () => {
   // Handle form submission with app secret prompt
   const handleFormSubmit = async (data: FormData, secret?: string) => {
     try {
-      let appSecret = localStorage.getItem('appSecret') || secret;
+      let appSecret = localStorage.getItem("appSecret") || secret;
       if (!appSecret) {
-        // Keep form open, show secret prompt
         setShowSecretPrompt(true);
         setPendingFormData(data);
-        console.log('App secret prompt triggered', { isFormOpen, showSecretPrompt: true });
+        console.log("App secret prompt triggered", { isFormOpen, showSecretPrompt: true });
         return;
       }
       const formToSubmit = pendingFormData || data;
-      console.log(` FormData just before api call:`, formToSubmit);
+      console.log(`FormData just before api call:`, formToSubmit);
       const result = await manageBlacklistedAddress(data, appSecret);
-      console.log('API Result:', result);
+      console.log("API Result:", result);
       setIsFormOpen(false);
       setShowSecretPrompt(false);
       toast.success("Address blacklisted successfully");
@@ -63,7 +79,7 @@ const App = () => {
       setShowAddressCard(true);
       setSearchResults(response);
       if (secret) {
-        localStorage.setItem('appSecret', secret);
+        localStorage.setItem("appSecret", secret);
       }
       setPendingFormData(null);
     } catch (err) {
@@ -73,17 +89,19 @@ const App = () => {
     }
   };
 
-  // Handle search submission, keep card visible for Ctrl+K
-  const handleSearchSubmit = async (
-    e: React.KeyboardEvent<HTMLInputElement>
-  ) => {
-    if (e.key === "Enter" && searchQuery.trim()) {
+  // Handle search submission, update history
+  const handleSearchSubmit = async (query: string) => {
+    if (query.trim()) {
       setLoading(true);
       setShowSearch(false);
       try {
-        const result = await fetchBlacklistedAddress(searchQuery.trim());
+        const result = await fetchBlacklistedAddress(query.trim());
         setSearchResults(result);
         setShowAddressCard(true);
+        setSearchHistory((prev) => {
+          const newHistory = [query.trim(), ...prev.filter((item) => item !== query.trim())].slice(0, 10); // Limit to 10 items
+          return newHistory;
+        });
       } catch (error) {
         toast.error(
           error instanceof Error ? error.message : "Failed to search address"
@@ -108,8 +126,6 @@ const App = () => {
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement;
-
-      // Check if user is typing in an input, textarea, or contenteditable
       const isTyping =
         target.tagName === "INPUT" ||
         target.tagName === "TEXTAREA" ||
@@ -121,14 +137,15 @@ const App = () => {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         setShowSearch((prev) => !prev);
-        if (!showSearch) {
-          setTimeout(() => searchInputRef.current?.focus(), 0);
+        if (showAddressCard) {
+          setShowAddressCard(false); // Hide AddressCard when showing search
+          setSearchResults(null); // Clear search results
         }
       }
     };
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [handleAddNew, showSearch]);
+  }, [handleAddNew, showAddressCard]);
 
   return (
     <>
@@ -154,8 +171,8 @@ const App = () => {
 
         {/* Content */}
         <div className="relative z-10 p-6">
-          {loading && (
-            <div className=" absolute inset-2.5 mt-32">
+          {/* {loading && (
+            <div className="absolute inset-2.5 mt-32">
               <div className="flex items-center justify-center p-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-900 dark:border-neutral-100"></div>
                 <p className="ml-3 text-neutral-700 dark:text-neutral-300">
@@ -163,56 +180,46 @@ const App = () => {
                 </p>
               </div>
             </div>
-          )}
-          {showSearch && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60  pointer-events-auto animate-in fade-in duration-200">
-              <div className="relative w-full max-w-2xl mx-4 -translate-y-60 pointer-events-auto sm:-translate-y-50">
-                {/* Main search container */}
-                <div className="relative bg-white dark:bg-black rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden backdrop-blur-xl">
-                  {/* Search input */}
-                  <div className="relative">
-                    <input
-                      ref={searchInputRef}
-                      type="text"
-                      placeholder="Search by address..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyDown={handleSearchSubmit}
-                      className="w-full pl-14 pr-20 py-6 text-lg bg-transparent text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border-0 outline-none focus:ring-0"
-                    />
-
-                    {/* Search icon */}
-                    <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                      <svg
-                        className="h-6 w-6 text-gray-400 dark:text-gray-500"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                        />
-                      </svg>
-                    </div>
-
-                    {/* Keyboard shortcut badge - desktop only */}
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none hidden sm:flex items-center gap-2">
-                      <kbd className="inline-flex items-center px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-xs font-medium text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 shadow-sm">
-                        <span className="text-xs">⌘ + </span>
-                        <span className="ml-1">K</span>
-                      </kbd>
-                    </div>
-                  </div>
-
-                  {/* Bottom border with gradient */}
-                  <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent"></div>
-                </div>
+          )} */}
+          {!showAddressCard && (
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <div className="w-full max-w-2xl mx-4 -translate-y-3/4">
+                <Command className="dark:bg-black-100 rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden backdrop-blur-xl py-2">
+                  <CommandInput
+                    ref={searchInputRef}
+                    placeholder="Search by address..."
+                    value={searchQuery}
+                    onValueChange={setSearchQuery}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSearchSubmit(searchQuery);
+                      }
+                    }}
+                    className="text-lg px-6 py-4"
+                  />
+                  <CommandList>
+                    <CommandEmpty>No results found.</CommandEmpty>
+                    {searchHistory.length > 0 && (
+                      <CommandGroup heading="Recent Searches"  className="space-y-2">
+                        {searchHistory.map((item, index) => (
+                          <CommandItem
+                            key={index}
+                            onSelect={() => {
+                              setSearchQuery(item);
+                              handleSearchSubmit(item);
+                            }}
+                          >
+                            {item}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    )}
+                  </CommandList>
+                </Command>
               </div>
             </div>
           )}
+         
           {isFormOpen && (
             <AddressForm
               formData={formData}
@@ -220,7 +227,7 @@ const App = () => {
               onCancel={() => setIsFormOpen(false)}
               className={
                 showSecretPrompt ? "opacity-50 pointer-events-none" : ""
-              } // Reduce opacity when secret prompt is shown
+              }
             />
           )}
           {showSecretPrompt && (
