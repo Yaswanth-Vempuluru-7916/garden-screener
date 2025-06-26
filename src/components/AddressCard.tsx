@@ -3,8 +3,6 @@ import type { BlacklistedAddress } from '../types';
 
 const AddressCard = ({ address, remarks, blacklisted_at, flagged_by }: BlacklistedAddress) => {
 
-    console.log('AddressCard props:', { address, remarks, blacklisted_at, flagged_by });
-
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleString('en-US', {
             year: 'numeric',

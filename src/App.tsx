@@ -183,7 +183,7 @@ const App = () => {
           )} */}
           {!showAddressCard && (
             <div className="fixed inset-0 flex items-center justify-center z-50">
-              <div className="w-full max-w-2xl mx-4 -translate-y-3/4">
+              <div className="w-full max-w-2xl mx-4">
                 <Command className="dark:bg-black-100 rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden backdrop-blur-xl py-2">
                   <CommandInput
                     ref={searchInputRef}

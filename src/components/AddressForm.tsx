@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from "react";
 import type { FormData } from "../types";
-import { getShortName } from "../utils/network";
 interface AddressFormProps {
   formData: FormData;
   onSubmit: (data: FormData, secret?: string) => void;
@@ -28,15 +27,15 @@ function AddressForm({
       return {
         ...prev,
         data: newData,
-        id: `${newData.address}-${getShortName(newData.network)}`,
+        id: `${Date.now()}`,
       };
     });
   };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!formData.data.address || !formData.data.network) {
-      alert("Address and Network are required");
+    if (!formData.data.address) {
+      alert("Address is required");
       return;
     }
     console.log('Submitting FormData:', formData);
@@ -89,34 +88,6 @@ function AddressForm({
                 placeholder="Enter wallet address..."
               />
             </div>
-
-            <div className="space-y-2">
-              <label
-                htmlFor="network"
-                className="block text-lg font-medium text-white"
-              >
-                Network *
-              </label>
-              <select
-                className="cursor-pointer w-auto px-4 py-2 bg-black border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black overflow-hidden"
-                name="network"
-                value={formData.data.network}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select a network...</option>
-                <option value="Ethereum">Ethereum</option>
-                <option value="Bitcoin">Bitcoin</option>
-                <option value="Base">Base</option>
-                <option value="Arbitrum">Arbitrum</option>
-                <option value="Starknet">Starknet</option>
-                <option value="BeraChain">BeraChain</option>
-                <option value="Corn">Corn</option>
-                <option value="Unichain">Unichain</option>
-                <option value="HyperEVM">HyperEVM</option>
-              </select>
-            </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label
