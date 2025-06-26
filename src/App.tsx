@@ -246,9 +246,6 @@ const App = () => {
             </div>
           </div>
         )}
-        {showAddressCard && !searchResults && (
-          <div className="mt-6 text-center text-gray-500">No results found.</div>
-        )}
       </div>
     </div>
   );

@@ -65,7 +65,7 @@ export const fetchBlacklistedAddress = async (address: string = ''): Promise<Bla
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      throw new Error(`Failed to fetch blacklisted addresses: ${error.response?.data?.message || error.message}`);
+      throw new Error(`Failed to fetch blacklisted addresses: ${error.response?.data?.status || error.message}`);
     }
     throw new Error('An unexpected error occurred while fetching blacklisted addresses');
   }
@@ -108,7 +108,7 @@ export const manageBlacklistedAddress = async (payload: FormData, appSecret: str
     return response.data;
   } catch (error) {
     if (error instanceof AxiosError) {
-      throw new Error(`Failed to manage blacklisted address: ${error.response?.data?.message || error.message}`);
+      throw new Error(`Failed to create blacklisted address: ${error.response?.data?.message || error.response?.data?.status}`);
     }
     throw new Error('An unexpected error occurred while managing blacklisted address');
   }
