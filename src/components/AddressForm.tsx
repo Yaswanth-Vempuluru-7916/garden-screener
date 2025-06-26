@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import type { FormData } from "../types";
-
+import { getShortName } from "../utils/network";
 interface AddressFormProps {
   formData: FormData;
   onSubmit: (data: FormData, secret?: string) => void;
@@ -28,7 +28,7 @@ function AddressForm({
       return {
         ...prev,
         data: newData,
-        id: `${newData.address}-${newData.network}`,
+        id: `${newData.address}-${getShortName(newData.network)}`,
       };
     });
   };
@@ -105,15 +105,15 @@ function AddressForm({
                 required
               >
                 <option value="">Select a network...</option>
-                <option value="eth">Ethereum</option>
-                <option value="btc">Bitcoin</option>
-                <option value="base">Base</option>
-                <option value="arb">Arbitrum</option>
-                <option value="stark">Starknet</option>
-                <option value="bera">BeraChain</option>
-                <option value="corn">Corn</option>
-                <option value="uni">Unichain</option>
-                <option value="hyp">HyperEVM</option>
+                <option value="Ethereum">Ethereum</option>
+                <option value="Bitcoin">Bitcoin</option>
+                <option value="Base">Base</option>
+                <option value="Arbitrum">Arbitrum</option>
+                <option value="Starknet">Starknet</option>
+                <option value="BeraChain">BeraChain</option>
+                <option value="Corn">Corn</option>
+                <option value="Unichain">Unichain</option>
+                <option value="HyperEVM">HyperEVM</option>
               </select>
             </div>
 
