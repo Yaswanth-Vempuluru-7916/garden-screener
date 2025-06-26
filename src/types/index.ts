@@ -10,7 +10,7 @@ export interface BlacklistedAddress {
 export interface FormDataPayload{
   address : string;
   network : string;
-  remarks? : string;
+  remark? : string;
   tag? : string;
 }
 

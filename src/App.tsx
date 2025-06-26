@@ -8,7 +8,7 @@ const App = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
-    data: { address: '',network: '', remarks: '', tag: '' },
+    data: { address: '',network: '', remark: '', tag: '' },
     id: '',
     type: 'create',
   });
@@ -35,7 +35,7 @@ const App = () => {
   const handleAddNew = useCallback(() => {
     console.log('Add New Address button clicked');
     setFormData({
-      data: {  address: '',network: '', remarks: '', tag: '' },
+      data: {  address: '',network: '', remark: '', tag: '' },
       id: '',
       type: 'create',
     });
