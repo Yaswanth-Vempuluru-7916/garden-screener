@@ -18,8 +18,9 @@ const App = () => {
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [showAddressCard, setShowAddressCard] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<BlacklistedAddress | null>(null);
-  const [showSecretPrompt, setShowSecretPrompt] = useState<boolean>(false);
+  const [showCredentialsPrompt, setShowCredentialsPrompt] = useState<boolean>(false); 
   const [tempSecret, setTempSecret] = useState<string>("");
+  const [tempAppId, setTempAppId] = useState<string>(""); 
   const [pendingFormData, setPendingFormData] = useState<FormData | null>(null);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
@@ -58,28 +59,32 @@ const App = () => {
     setIsFormOpen(true);
   }, []);
 
-  // Handle form submission with app secret prompt
-  const handleFormSubmit = async (data: FormData, secret?: string) => {
+  // Handle form submission with app secret and app id prompts
+  const handleFormSubmit = async (data: FormData, secret?: string, appId?: string) => {
     try {
       let appSecret = localStorage.getItem("appSecret") || secret;
-      if (!appSecret) {
-        setShowSecretPrompt(true);
+      let AppId = localStorage.getItem("appId") || appId;
+      if (!AppId || !appSecret) {
+        setShowCredentialsPrompt(true); // [mod] Show combined credentials prompt
         setPendingFormData(data);
-        console.log("App secret prompt triggered", { isFormOpen, showSecretPrompt: true });
+        console.log("Credentials prompt triggered", { isFormOpen, showCredentialsPrompt: true });
         return;
       }
       const formToSubmit = pendingFormData || data;
       console.log(`FormData just before api call:`, formToSubmit);
-      const result = await manageBlacklistedAddress(data, appSecret);
+      const result = await manageBlacklistedAddress(formToSubmit, appSecret, AppId);
       console.log("API Result:", result);
       setIsFormOpen(false);
-      setShowSecretPrompt(false);
+      setShowCredentialsPrompt(false); // [mod] Close credentials prompt
       toast.success("Address blacklisted successfully");
       const response = await fetchBlacklistedAddress(formToSubmit.data.address);
       setShowAddressCard(true);
       setSearchResults(response);
       if (secret) {
         localStorage.setItem("appSecret", secret);
+      }
+      if (AppId) {
+        localStorage.setItem("appId", AppId);
       }
       setPendingFormData(null);
     } catch (err) {
@@ -113,14 +118,15 @@ const App = () => {
     }
   };
 
-  // Handle app secret prompt submission
-  const handleSecretSubmit = (e: React.FormEvent) => {
+  // [mod] Handle credentials prompt submission
+  const handleCredentialsSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (tempSecret && pendingFormData) {
-      handleFormSubmit(pendingFormData, tempSecret);
+    if (tempSecret && tempAppId && pendingFormData) {
+      handleFormSubmit(pendingFormData, tempSecret, tempAppId);
       setTempSecret("");
+      setTempAppId("");
     }
-    setShowSecretPrompt(false);
+    setShowCredentialsPrompt(false);
   };
 
   useEffect(() => {
@@ -226,17 +232,25 @@ const App = () => {
               onSubmit={handleFormSubmit}
               onCancel={() => setIsFormOpen(false)}
               className={
-                showSecretPrompt ? "opacity-50 pointer-events-none" : ""
+                showCredentialsPrompt ? "opacity-50 pointer-events-none" : ""
               }
             />
           )}
-          {showSecretPrompt && (
+          {showCredentialsPrompt && (
             <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-100 p-4 sm:p-6 pointer-events-auto">
               <div className="relative bg-black/70 border border-gray-800 rounded-2xl p-6 w-full max-w-md">
                 <h2 className="text-xl font-bold text-white mb-4">
-                  Enter App Secret
+                  Enter Credentials
                 </h2>
-                <form onSubmit={handleSecretSubmit} className="space-y-4">
+                <form onSubmit={handleCredentialsSubmit} className="space-y-4">
+                  <input
+                    type="text"
+                    value={tempAppId}
+                    onChange={(e) => setTempAppId(e.target.value)}
+                    placeholder="App ID"
+                    className="w-full px-4 py-2 bg-black border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    required
+                  />
                   <input
                     type="password"
                     value={tempSecret}
@@ -248,7 +262,7 @@ const App = () => {
                   <div className="flex justify-end space-x-4">
                     <button
                       type="button"
-                      onClick={() => setShowSecretPrompt(false)}
+                      onClick={() => setShowCredentialsPrompt(false)}
                       className="px-4 py-2 bg-red-500 text-white rounded-md font-medium hover:bg-red-700"
                     >
                       Cancel

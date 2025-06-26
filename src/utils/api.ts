@@ -3,9 +3,6 @@ import type { BlacklistedAddress, FormData } from "../types";
 
 const BLACKLIST_API_URL = import.meta.env.VITE_BLACKLIST_API_URL;
 const BLACKLIST_POST_URL = import.meta.env.VITE_BLACKLIST_POST_URL;
-const APP_ID = import.meta.env.VITE_APP_ID;
-
-
 
 const generateTimestamp = (): string => {
     return Date.now().toString();
@@ -71,10 +68,9 @@ export const fetchBlacklistedAddress = async (address: string = ''): Promise<Bla
   }
 };
 
-export const manageBlacklistedAddress = async (payload: FormData, appSecret: string): Promise<BlacklistedAddress | { message: string }> => { // [mod] Add appSecret parameter
+export const manageBlacklistedAddress = async (payload: FormData, appSecret: string, appId: string): Promise<BlacklistedAddress | { message: string }> => { // [mod] Add appId parameter
   try {
     const timestamp = generateTimestamp();
-
     const nonce = generateNonce();
     const method = 'POST';
     const url = '/api/data/sync';
@@ -82,7 +78,7 @@ export const manageBlacklistedAddress = async (payload: FormData, appSecret: str
     const body = JSON.stringify(payload);
 
     const signature = await computeHmacSignature(
-      APP_ID,
+      appId, 
       timestamp,
       nonce,
       method,
@@ -94,9 +90,10 @@ export const manageBlacklistedAddress = async (payload: FormData, appSecret: str
     console.log(`Payload : ${JSON.stringify(payload)}`);
     console.log(`Signature : ${signature}`);
     console.log(`Secret : ${appSecret}`);
+    console.log(`App ID : ${appId}`);
     const config = {
       headers: {
-        'X-Signature-appid': APP_ID,
+        'X-Signature-appid': appId, 
         'X-Signature-timestamp': timestamp,
         'X-Signature-nonce': nonce,
         'X-Signature-signature': signature,
