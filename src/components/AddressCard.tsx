@@ -49,7 +49,7 @@ const AddressCard = ({ address, remarks, blacklisted_at, flagged_by }: Blacklist
                     <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Address
                     </span>
-                    <span className="text-gray-200 font-mono text-sm bg gray-900/70 border border-gray-700 px-3 py-2 rounded-lg break-all">
+                    <span className="text-gray-200 font-mono text-sm gray-900/70 border border-gray-700 px-3 py-2 rounded-lg break-all">
                         {address}
                     </span>
                 </div>

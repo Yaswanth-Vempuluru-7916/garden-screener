@@ -48,7 +48,7 @@ function AddressForm({
       <div className="relative bg-black/70 border border-gray-800 rounded-2xl p-6 w-full max-w-2xl">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-4">
-            <div className="p-2 bg-gray-900 rounded-lg">
+            <div className="p-2  rounded-lg gray-900/70 border border-gray-700">
               <svg
                 className="w-6 h-6 text-white"
                 fill="none"
@@ -85,7 +85,7 @@ function AddressForm({
                 value={formData.data.address}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black"
+                className="w-full px-4 py-2 bg-black border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black"
                 placeholder="Enter wallet address..."
               />
             </div>
@@ -98,7 +98,7 @@ function AddressForm({
                 Network *
               </label>
               <select
-                className="cursor-pointer w-auto px-4 py-2 bg-gray-900 border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black overflow-hidden"
+                className="cursor-pointer w-auto px-4 py-2 bg-black border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black overflow-hidden"
                 name="network"
                 value={formData.data.network}
                 onChange={handleInputChange}
@@ -131,7 +131,7 @@ function AddressForm({
                   name="remark"
                   value={formData.data.remark}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black"
+                  className="w-full px-4 py-2 bg-black border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black"
                   placeholder="Optional remark..."
                 />
               </div>
@@ -149,7 +149,7 @@ function AddressForm({
                   name="tag"
                   value={formData.data.tag}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-gray-900 border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black"
+                  className="w-full px-4 py-2 bg-black border border-gray-700 rounded-md text-white text-base placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-black"
                   placeholder="Optional tag..."
                 />
               </div>
